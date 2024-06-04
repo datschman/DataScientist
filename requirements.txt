@@ -1,0 +1,13 @@
+# API
+fastapi
+uvicorn
+requests
+
+#ML
+scikit-learn==1.5.0
+
+#.env
+python-dotenv
+pandas
+
+streamlit
