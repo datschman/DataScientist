@@ -1,4 +1,6 @@
-from models import data
+import pandas as pd
+
+data = pd.read_csv("../raw_data/ds_salaries.csv")
 
 #delete duplicates
 def delete_duplicates (data):
