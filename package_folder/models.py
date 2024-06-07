@@ -21,6 +21,11 @@ from sklearn.linear_model import Ridge
 data = pd.read_csv("../raw_data/ds_salaries.csv")
 data.head()
 
+# Apply CLeaning Functions:
+from cleaning import delete_duplicates
+from cleaning import group_countries
+delete_duplicates(data)
+group_countries (data)
 
 
 #Define X and y
@@ -31,9 +36,7 @@ y = data ["salary_in_usd"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, shuffle=True)
 
 
-#CLeaning Function:
-from cleaning import delete_duplicates
-delete_duplicates(data)
+
 
 
 # Model: Setup Pipeline for Encoding + Regression
@@ -80,3 +83,4 @@ model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
 model.score(X_test, y_test) # Score model
+print(model.score(X_test, y_test))
