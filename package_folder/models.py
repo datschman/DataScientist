@@ -4,8 +4,7 @@ class DummyModel:
         return [50000 for _ in X]
 
 
-#CLeaning Function
-"calling the function"
+#CLeaning Function: only calling (stored in cleaning)
 
 #Preprocessing Pipe
 
