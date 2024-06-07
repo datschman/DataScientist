@@ -9,7 +9,7 @@ def delete_duplicates (data):
 
 
 #Group Countries by regions
-def group_countries():
+def group_countries(data):
 
 
     # List of countries with more than 30 entries
