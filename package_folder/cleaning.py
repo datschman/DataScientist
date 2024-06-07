@@ -2,7 +2,7 @@ import pandas as pd
 
 data = pd.read_csv("../raw_data/ds_salaries.csv")
 
-#delete duplicates
+#delete duplicate
 def delete_duplicates (data):
     data = data.drop_duplicates()
     return data
