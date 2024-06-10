@@ -16,6 +16,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.dummy import DummyRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Ridge
+import numpy as np
 
 #define data
 data = pd.read_csv("../raw_data/ds_salaries.csv")
@@ -24,16 +25,20 @@ data.head()
 # Apply CLeaning Functions:
 from cleaning import delete_duplicates
 from cleaning import group_countries
+from cleaning import group_job_titles
+
 delete_duplicates(data)
 group_countries (data)
+group_job_titles(data)
 
 
-#Define X and y
-X = data.drop(columns=["salary", "salary_currency", "salary_in_usd", "company_location"])
-y = data ["salary_in_usd"]
+#Define X and y (y needs to be log-transformed)
+data["salary_in_usd_log"] = np.log(data['salary_in_usd'] + 0.0000001)
+X = data.drop(columns=["salary", "salary_currency", "salary_in_usd", "salary_in_usd_log", "company_location", "job_title", "employment_type"])
+y = data ["salary_in_usd_log"]
 
 # Train, test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, shuffle=True, random_state=1)
 
 
 
@@ -41,7 +46,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, shuf
 
 # Model: Setup Pipeline for Encoding + Regression
 ###### Assign features to encoder-version
-categorical_col = ["job_title", "company_location_grouped", "employee_residence"]
+categorical_col = ["job_title_cluster", "company_location_grouped", "employee_residence"]
 ordinal_col = ["work_year", "experience_level", "company_size"]
 
 ####### Define categories for ordinal_col
@@ -82,5 +87,6 @@ model = Pipeline([
 model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
-model.score(X_test, y_test) # Score model
-print(model.score(X_test, y_test))
+print(model.score(X_test, y_test)) # Score model
+
+print(len(X_train))
