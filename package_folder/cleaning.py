@@ -1,6 +1,7 @@
 import pandas as pd
 
-data = pd.read_csv("../raw_data/ds_salaries.csv")
+#Changing the structure : loading directly into the models.py file
+#data = pd.read_csv("../raw_data/ds_salaries.csv")
 
 #delete duplicate
 def delete_duplicates (data):
@@ -76,3 +77,4 @@ def group_countries(data):
     # Count the number of entries for each region and high-entry country
     region_counts = data['company_location_grouped'].value_counts()
     print(region_counts)
+    return data
