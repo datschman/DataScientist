@@ -7,6 +7,39 @@ def delete_duplicates (data):
     data = data.drop_duplicates()
     return data
 
+#Group Job titles
+def group_job_titles(data):
+    job_titles = data["job_title"].unique()
+
+    # keywords
+    keywords = ["Data Scien",  "Machine Learning", "Analyst" , "Engineer" ]
+    # old list long: keywords = ["Data Scien",  "Machine Learning", "Analyst", "Engineer", "Research", "Analytics", "Vision", "Architect", "Developer", "Manager", "Head", "Lead", "Cloud", "Specialist", "Principal"]
+
+
+    # create dictionary
+    clusters = {keyword: [] for keyword in keywords}
+    clusters["Others"] = []
+
+    # assign job titles
+    for title in job_titles:
+        matched = False
+        for keyword in keywords:
+            if keyword.lower() in title.lower():
+                clusters[keyword].append(title)
+                matched = True
+        if not matched:
+            clusters["Others"].append(title)
+
+    #Assign cluster in new column
+    def assign_cluster(title):
+        for keyword in keywords:
+            if keyword.lower() in title.lower():
+                return keyword
+        return "Others"
+
+    data['job_title_cluster'] = data['job_title'].apply(assign_cluster)
+    #print(data['job_title_cluster'])
+
 
 #Group Countries by regions
 def group_countries(data):
@@ -75,4 +108,4 @@ def group_countries(data):
 
     # Count the number of entries for each region and high-entry country
     region_counts = data['company_location_grouped'].value_counts()
-    print(region_counts)
+    #print(region_counts)
