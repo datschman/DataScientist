@@ -25,7 +25,7 @@ import numpy as np
 # Use absolute path to load the dataset
 data_path = os.path.join(os.path.dirname(__file__), "../raw_data/ds_salaries.csv")
 data = pd.read_csv(data_path)
-print("Dataset loaded. Columns:", data.columns)
+
 
 # Check the first few rows of the DataFrame
 #print(data.head())
@@ -42,8 +42,9 @@ data = group_job_titles(data)
 
 #Define X and y (y needs to be log-transformed)
 data["salary_in_usd_log"] = np.log(data['salary_in_usd'] + 0.0000001)
-X = data.drop(columns=["salary", "salary_currency", "salary_in_usd", "salary_in_usd_log", "company_location", "job_title", "employment_type"])
+X = data[['work_year', 'experience_level', 'employee_residence', 'remote_ratio','company_size', 'company_location_grouped', 'job_title_cluster']]
 y = data ["salary_in_usd_log"]
+print(X.columns)
 
 # Train, test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, shuffle=True, random_state=1)
@@ -51,20 +52,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, shuf
 
 
 
-
 # Model: Setup Pipeline for Encoding + Regression
 ###### Assign features to encoder-version
 categorical_col = ["job_title_cluster", "company_location_grouped", "employee_residence"]
-ordinal_col = ["work_year", "experience_level", "company_size"]
+ordinal_col = ["work_year", "experience_level", "company_size", "remote_ratio"]
 
 ####### Define categories for ordinal_col
 work_year_categories = ["2020", "2021", "2022", "2023", "2024"]
 experience_level_categories = ["EN", "MI", "SE", "EX"]
 employment_type_categories = ["PT", "FT", "CT", "FL"]
 company_size_categories = ["S", "M", "L"]
+remote_ratio_categories = [0,50,100]
 
 ####### Combine categories into final list
-categories = [work_year_categories, experience_level_categories, company_size_categories]
+categories = [work_year_categories, experience_level_categories, company_size_categories,remote_ratio_categories]
 
 ####### Instantiate OrdinalEncoder with categories
 ordinal_encoder = OrdinalEncoder(categories=categories)
@@ -110,4 +111,3 @@ model_path = os.path.join(model_dir, "real_model.pkl")
 
 # Save the model
 joblib.dump(model, model_path)
-print(f"Model saved to {model_path}")

@@ -110,5 +110,5 @@ def group_countries(data):
 
     # Count the number of entries for each region and high-entry country
     region_counts = data['company_location_grouped'].value_counts()
-    print(region_counts)
+    #print(region_counts)
     return data
