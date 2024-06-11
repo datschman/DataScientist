@@ -1,7 +1,7 @@
 # package_folder/models.py
-class DummyModel:
-    def predict(self, X):
-        return [50000 for _ in X]
+#class DummyModel:
+#   def predict(self, X):
+#        return [50000 for _ in X]
 
 
 
@@ -16,20 +16,28 @@ from sklearn.pipeline import Pipeline
 from sklearn.dummy import DummyRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Ridge
-import numpy as np
+import joblib
+
+# Print the current working directory for debugging
+print("Current working directory:", os.getcwd())
+
+
+# Use absolute path to load the dataset
+data_path = os.path.join(os.path.dirname(__file__), "../raw_data/ds_salaries.csv")
+data = pd.read_csv(data_path)
+print("Dataset loaded. Columns:", data.columns)
+
+# Check the first few rows of the DataFrame
+print(data.head())
 
 #define data
-data = pd.read_csv("../raw_data/ds_salaries.csv")
-data.head()
+#data = pd.read_csv("../raw_data/ds_salaries.csv")
+#data.head()
 
 # Apply CLeaning Functions:
-from cleaning import delete_duplicates
-from cleaning import group_countries
-from cleaning import group_job_titles
-
-delete_duplicates(data)
-group_countries (data)
-group_job_titles(data)
+from package_folder.cleaning import delete_duplicates, group_countries
+data = delete_duplicates(data)
+data = group_countries(data)
 
 
 #Define X and y (y needs to be log-transformed)
@@ -50,7 +58,7 @@ categorical_col = ["job_title_cluster", "company_location_grouped", "employee_re
 ordinal_col = ["work_year", "experience_level", "company_size"]
 
 ####### Define categories for ordinal_col
-work_year_categories = ["2020", "2021", "2022", "2023"]
+work_year_categories = ["2020", "2021", "2022", "2023", "2024"]
 experience_level_categories = ["EN", "MI", "SE", "EX"]
 employment_type_categories = ["PT", "FT", "CT", "FL"]
 company_size_categories = ["S", "M", "L"]
@@ -86,7 +94,20 @@ model = Pipeline([
 ######## fit and transform your data with the model
 model.fit(X_train, y_train)
 
+# Predict and score the model
 y_pred = model.predict(X_test)
-print(model.score(X_test, y_test)) # Score model
+model.score(X_test, y_test) # Score model
+print(model.score(X_test, y_test))
 
-print(len(X_train))
+# Construct the path to the model directory
+model_dir = os.path.join(os.path.dirname(__file__), "models_pkl")
+
+# Ensure the directory exists
+os.makedirs(model_dir, exist_ok=True)
+
+# Construct the path to the model file
+model_path = os.path.join(model_dir, "real_model.pkl")
+
+# Save the model
+joblib.dump(model, model_path)
+print(f"Model saved to {model_path}")
