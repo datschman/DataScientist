@@ -13,10 +13,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.dummy import DummyRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Ridge
 import joblib
+import numpy as np
 
 # Print the current working directory for debugging
 print("Current working directory:", os.getcwd())
