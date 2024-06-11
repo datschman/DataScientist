@@ -25,7 +25,7 @@ print("Current working directory:", os.getcwd())
 # Use absolute path to load the dataset
 data_path = os.path.join(os.path.dirname(__file__), "../raw_data/ds_salaries.csv")
 data = pd.read_csv(data_path)
-print("Dataset loaded. Columns:", data.columns)
+
 
 # Check the first few rows of the DataFrame
 #print(data.head())
@@ -44,6 +44,7 @@ data = group_job_titles(data)
 data["salary_in_usd_log"] = np.log(data['salary_in_usd'] + 0.0000001)
 X = data[["work_year", "experience_level", "remote_ratio", "company_size", "company_location_grouped", "job_title_cluster"]]
 y = data ["salary_in_usd_log"]
+print(X.columns)
 
 # Print columns of X to ensure all is included
 print("Features (X) columns:", X.columns)
@@ -54,7 +55,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, shuf
 
 
 print("Training features (X_train) columns:", X_train.columns)
-
 
 # Model: Setup Pipeline for Encoding + Regression
 ###### Assign features to encoder-version
@@ -114,4 +114,3 @@ model_path = os.path.join(model_dir, "real_model.pkl")
 
 # Save the model
 joblib.dump(model, model_path)
-print(f"Model saved to {model_path}")
