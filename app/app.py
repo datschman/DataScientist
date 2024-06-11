@@ -7,19 +7,18 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 
 # Function to call the FastAPI prediction endpoint
-def get_prediction(work_year, experience_level, employment_type, job_title, employee_residence, remote_ratio, company_size, company_location_grouped):
+def get_prediction(work_year, experience_level, employment_type, job_title_cluster, remote_ratio, company_size, company_location_grouped):
     url = "http://127.0.0.1:8000/predict"
     params = {
         "work_year": work_year,
         "experience_level": experience_level,
         "employment_type": employment_type,
-        "job_title": job_title,
-        "employee_residence": employee_residence,
+        "job_title_cluster": job_title_cluster,
         "remote_ratio": remote_ratio,
         "company_size": company_size,
         "company_location_grouped": company_location_grouped
     }
-    logger = logging.getLogger()
+    logger.info(f"Request params: {params}")
     response = requests.get(url, params=params)
     logger.info(f"Response status code: {response.status_code}")
     logger.info(f"Response text: {response.text}")
@@ -41,30 +40,29 @@ def main():
     st.write("Predict your salary based on your experience level and other optional parameters.")
 
     # Input fields
-    experience_level_map = {'Entry-level': 1, 'Mid-level': 2, 'Senior-level': 3}
-    employment_type_map = {'Full-time': 1, 'Part-time': 2, 'Contract': 3, 'Intern': 4}
-    job_title_map = {'Engineering': 1, 'Data Science': 2, 'Analytics': 3, 'Machine Learning': 4, 'Others': 5}
+    experience_level_map = {'Entry-level': 'EN', 'Mid-level': 'MI', 'Senior-level': 'SE', 'Executive': 'EX'}
+    employment_type_map = {'Full-time': 'FT', 'Part-time': 'PT', 'Contract': 'CT', 'Freelance': 'FL'}
+    job_title_map = {'Data Science': 'Data Scien', 'Machine Learning': 'Machine Learning', 'Analytics': 'Analyst', 'Engineering': 'Engineer', 'Other Data job': 'Others'}
     location_map = {'US': 'US', 'GB': 'GB', 'CA': 'CA', 'ES': 'ES', 'IN': 'IN', 'DE': 'DE', 'FR': 'FR',
-                    'Rest of Asia': 'Rest_of_Asia', 'Mexico and Latin America': 'Latin_America', 'Rest of the world': 'Rest_of_the_World'}
+                    'Rest of Asia': 'Rest_of_Asia', 'Mexico and Latin America': 'Latin_America', 'Rest of the world': 'Rest_of_the_World', 'Rest of Europe': 'Rest_of_Europe'}
     remote_ratio_map = {'0%': 0, '50%': 50, '100%': 100}
-    company_size_map = {'Small': 1, 'Medium': 2, 'Large': 3}
+    company_size_map = {'Small': 'S', 'Medium': 'M', 'Large': 'L'}
 
 
     work_year = 2024  # Assuming work_year is always 2024
     experience_level = st.selectbox('Level of Experience', list(experience_level_map.keys()))
     employment_type = st.selectbox('Employment Type', list(employment_type_map.keys()))
-    job_title = st.selectbox('Job Title', list(job_title_map.keys()))
-    location = st.selectbox('Location', list(location_map.keys()))
+    job_title_cluster = st.selectbox('Job Title', list(job_title_map.keys()))
     remote_ratio = st.selectbox('Remote Ratio', list(remote_ratio_map.keys()))
 
 
     st.write("If you are making a prediction for a known company, you can enter the following:")
     company_size = st.selectbox('Company Size (optional)', ['Select', 'Small', 'Medium', 'Large'])
-    company_location = st.selectbox('Company Location (optional)', ['Select'] + list(location_map.keys()))
+    company_location_grouped = st.selectbox('Company Location (optional)', ['Select'] + list(location_map.keys()))
 
     # Use the same value as location if company_location is 'Select'
-    if company_location == 'Select':
-        company_location = location
+    if company_location_grouped == 'Select':
+        company_location_grouped = 'US'
 
     if company_size == 'Select':
         company_size = None
@@ -74,8 +72,8 @@ def main():
     if st.button('Predict Salary'):
        # Call the FastAPI endpoint for prediction
         predicted_salary = get_prediction(work_year, experience_level_map[experience_level], employment_type_map[employment_type],
-                                          job_title_map[job_title], location_map[location], remote_ratio_map[remote_ratio],
-                                          company_size, location_map[company_location])
+                                          job_title_map[job_title_cluster], remote_ratio_map[remote_ratio],
+                                          company_size, location_map[company_location_grouped])
 
         if isinstance(predicted_salary, str) and "Error" in predicted_salary:
             st.error(predicted_salary)
