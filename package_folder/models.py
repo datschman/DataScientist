@@ -19,7 +19,7 @@ import joblib
 import numpy as np
 
 # Print the current working directory for debugging
-print("Current working directory:", os.getcwd())
+#print("Current working directory:", os.getcwd())
 
 
 # Use absolute path to load the dataset
@@ -28,17 +28,17 @@ data = pd.read_csv(data_path)
 print("Dataset loaded. Columns:", data.columns)
 
 # Check the first few rows of the DataFrame
-print(data.head())
+#print(data.head())
 
 #define data
 #data = pd.read_csv("../raw_data/ds_salaries.csv")
 #data.head()
 
 # Apply CLeaning Functions:
-from package_folder.cleaning import delete_duplicates, group_countries
+from cleaning import delete_duplicates, group_countries, group_job_titles
 data = delete_duplicates(data)
 data = group_countries(data)
-
+data = group_job_titles(data)
 
 #Define X and y (y needs to be log-transformed)
 data["salary_in_usd_log"] = np.log(data['salary_in_usd'] + 0.0000001)
