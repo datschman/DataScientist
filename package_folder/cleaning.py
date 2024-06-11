@@ -39,6 +39,7 @@ def group_job_titles(data):
         return "Others"
 
     data['job_title_cluster'] = data['job_title'].apply(assign_cluster)
+    return data
     #print(data['job_title_cluster'])
 
 
