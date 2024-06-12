@@ -45,6 +45,7 @@ data["salary_in_usd_log"] = np.log(data['salary_in_usd'] + 0.0000001)
 X = data[["work_year", "experience_level", "remote_ratio", "company_size", "company_location_grouped", "job_title_cluster"]]
 y = data ["salary_in_usd_log"]
 print(X.columns)
+print(y)
 
 # Print columns of X to ensure all is included
 print("Features (X) columns:", X.columns)
