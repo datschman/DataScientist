@@ -6,9 +6,12 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 
+# Replace the FastAPI URL with the actual URL from Cloud Run
+FASTAPI_URL = "https://fastapi-app-6jfxomnrna-uc.a.run.app"
+
 # Function to call the FastAPI prediction endpoint
 def get_prediction(work_year, experience_level, employment_type, job_title_cluster, remote_ratio, company_size, company_location_grouped):
-    url = "http://127.0.0.1:8000/predict"
+    url = f"{FASTAPI_URL}/predict"
     params = {
         "work_year": work_year,
         "experience_level": experience_level,
