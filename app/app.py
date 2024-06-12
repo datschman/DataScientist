@@ -90,3 +90,39 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+### Additions Stefan starting here ###
+
+#reduce whitespace
+#st.set_page_config(layout="centered")
+
+# Create columns to separate content
+import streamlit.components.v1 as components
+
+col1, col2 = st.columns(2)
+
+with col1:
+    from PIL import Image
+    image = Image.open('Graphs_website/Tools_job_descriptions.PNG')
+
+    # Define the new size
+    new_size = (image.size[0]//2, image.size[1]//2)
+
+    # Resize the image
+    image = image.resize(new_size)
+
+    st.image(image, caption='Tools_job_descriptions', use_column_width=True)
+
+with col2:
+    from PIL import Image
+    image = Image.open('Graphs_website/Top10_industries.PNG')
+
+    # Define the new size
+    new_size = (image.size[0]//2, image.size[1]//2)
+
+    # Resize the image
+    image = image.resize(new_size)
+
+    st.image(image, caption='Top10_industries', use_column_width=True)
+
+components.iframe("https://docs.google.com/presentation/d/e/2PACX-1vT7iJuNEKW8FQtLjkYXKE3dCJjD4afJFEY4axAlGDqzsmwE8LjxgAbxQAwwk8w1Bg/embed?start=false&loop=false&delayms=3000", height=565)
