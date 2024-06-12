@@ -1,0 +1,23 @@
+# Use the official image as a parent image
+FROM python:3.9-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file into the image
+COPY requirements.txt .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the working directory contents into the image
+COPY . .
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Define environment variable for the port
+ENV PORT 8080
+
+# Run the Streamlit application
+CMD ["streamlit", "run", "app/app.py", "--server.port", "8080", "--server.address", "0.0.0.0"]
