@@ -73,6 +73,7 @@ def display_salary_distribution(data):
     # Plotting the number of occurrences of each salary range using a bar plot
     plt.figure(figsize=(7, 5))
     sns.barplot(x=salary_range_counts.index, y=salary_range_counts.values, palette=sns.light_palette("red", n_colors=5))
+    plt.title('Salary Distribution for your Experience', fontsize=16, color='#333333')
     plt.xlabel('Salary Range', fontsize=12, color='#333333')
     plt.ylabel('Number of Occurrences', fontsize=12, color='#333333')
     plt.xticks(rotation=45, color='#333333')
@@ -85,6 +86,7 @@ def display_experience_level_by_job(data, selected_job_category):
     filtered_data = data[data['job_title_cluster'] == selected_job_category]
     plt.figure(figsize=(7, 5))
     sns.countplot(data=filtered_data, x='experience_level', order=['EN', 'MI', 'SE', 'EX'], palette=sns.color_palette("light:r", n_colors=4))
+    plt.title('Job offers by Experience for your job Category', fontsize=16, color='#333333')
     plt.xlabel('Experience Level', fontsize=12, color='#333333')
     plt.ylabel('Count', fontsize=12, color='#333333')
     plt.xticks(rotation=45, color='#333333')
@@ -97,11 +99,12 @@ def display_experience_level_impact_on_salaries(data):
     # Remove the top outlier in the second column
     mid_level_data = data[data['experience_level'] == 'MI']
     if not mid_level_data.empty:
-        max_value = mid_level_data['salary'].max()
-        data = data[~((data['experience_level'] == 'MI') & (data['salary'] == max_value))]
+        max_value = mid_level_data['salary_in_usd'].max()
+        data = data[~((data['experience_level'] == 'MI') & (data['salary_in_usd'] == max_value))]
 
     plt.figure(figsize=(7, 5))
     sns.boxplot(data=data, x='experience_level', y='salary_in_usd', order=['EN', 'MI', 'SE', 'EX'], palette=sns.light_palette("red", n_colors=4))
+    plt.title('Salary Overview by Experience', fontsize=16, color='#333333')
     plt.xlabel('Experience Level', fontsize=12, color='#333333')
     plt.ylabel('Salary (USD)', fontsize=12, color='#333333')
     plt.xticks(color='#333333')
@@ -182,20 +185,17 @@ def main():
             font-size: 16px;
             color: #333333;
         }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 16px;
+            color: #333333;
+        }
+        .footer img {
+            width: 100px;  /* Adjust size as needed */
+            margin-top: 10px;
+        }
         </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-    # Header with logo and title
-    st.markdown(
-        """
-        <div class="header-container">
-            <img src="app/DaTaSciencelogo.png" alt="Logo">
-            <div class="header-text">
-                <h1>Data Science Career Navigator</h1>
-            </div>
-        </div>
         """,
         unsafe_allow_html=True
     )
@@ -204,7 +204,7 @@ def main():
 
     with col1:
         with st.form(key='salary_form'):
-            st.write("## Start by entering your information")
+            st.write("## Start with your info:")
             experience_level_map = {'Entry-level': 'EN', 'Mid-level': 'MI', 'Senior-level': 'SE', 'Executive': 'EX'}
             employment_type_map = {'Full-time': 'FT', 'Part-time': 'PT', 'Contract': 'CT', 'Freelance': 'FL'}
             job_title_map = {'Data Science': 'Data Science', 'Machine Learning': 'Machine Learning', 'Analytics': 'Analytics', 'Engineering': 'Engineering', 'Other Data job': 'Other Data jobs'}
@@ -234,7 +234,14 @@ def main():
             form_submitted = st.form_submit_button(label='Predict Salary')
 
     with col2:
-        st.write("## Predict your salary based on your experience level and other optional parameters.")
+        left_co, cent_co,last_co = st.columns(3)
+        with cent_co:
+            st.image("DaTaSciencelogo.png", width=300)
+
+        st.write("""
+            Are you intrigued by the world of Data Science? We have something just for you! Simply input your personal details on the left, and voila! You’ll receive a personalized salary prediction tailored to your profile.
+            Our Career Navigator employs a prediction model, built on data extracted from data job platforms. Use it as a compass in the exciting journey of Data Science! Remember, it’s not magic, it’s science!
+        """)
 
         # Load your dataset
         data_path = os.path.join(os.path.dirname(__file__), "../raw_data/ds_salaries.csv")
@@ -272,6 +279,8 @@ def main():
                     f"</div>",
                     unsafe_allow_html=True
                 )
+
+
 
 if __name__ == '__main__':
     main()
